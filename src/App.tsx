@@ -1,11 +1,9 @@
-import { useState } from "react";
-import { Button } from "./components/ui/button";
+import { Input } from "@/components/ui/input";
 const App = () => {
-  const [state, setstate] = useState<any>(null);
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <Button>Click me</Button>
-    </div>
+    <>
+      <Input type="text" placeholder="Search" />
+    </>
   );
 };
 
