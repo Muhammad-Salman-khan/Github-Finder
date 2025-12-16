@@ -1,27 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Suggestion from "./Suggestion";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
-import { Globe } from "lucide-react";
 import { TfiGithub } from "react-icons/tfi";
 import Card from "./Card";
+import getUser from "@/hooks/getUser";
+import type { GitHubData } from "@/types/types";
 
 const Profile = () => {
-  const [username, setUsername] = useState<string | number>("");
+  const [username, setUsername] = useState("");
   const [submittedUser, setsubmittedUser] = useState("");
-
+  useEffect(() => {
+    const Time = setTimeout(() => setsubmittedUser(username), 700);
+    return () => clearTimeout(Time);
+  }, [username]);
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["users", username],
-    queryFn: async () => {
-      const res = await fetch(
-        `${import.meta.env.VITE_GITHUB_API}users/${username}`
-      );
-      if (!res.ok) throw new Error("user not found");
-      const data = await res.json();
-      console.log(data);
-      return data;
-    },
-    enabled: !!username,
+    queryKey: ["users", submittedUser],
+    queryFn: () => getUser(submittedUser),
+    enabled: !!submittedUser,
   });
 
   return (
@@ -42,32 +38,27 @@ const Profile = () => {
           <Suggestion />
         </div>
         {isLoading && (
-          <div className="flex flex-row gap-2">
-            <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:.7s]"></div>
-            <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:.3s]"></div>
-            <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:.7s]"></div>
+          <div className="flex flex-row mt-2 gap-2">
+            <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:.7s]">
+              <TfiGithub />
+            </div>
+            <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:.3s]">
+              <TfiGithub />
+            </div>
+            <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:.7s]">
+              <TfiGithub />
+            </div>
           </div>
         )}
         {isError && (
           <div
             role="alert"
-            className="bg-red-100 dark:bg-red-900 border-l-4 w-full border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105"
+            className="bg-red-100 text-center flex justify-center align-middle  p-3 dark:bg-red-900  gap-3 border-l-4 w-full border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 rounded-lg  items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform"
           >
-            <svg
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="h-5 w-5 shrink-0 mr-2 text-red-600"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                stroke-width="2"
-                stroke-linejoin="round"
-                stroke-linecap="round"
-              ></path>
-            </svg>
-            <p className="text-md font-semibold">{error?.message}</p>
+            <TfiGithub />
+            <p className="text-md text-center font-semibold">
+              {error?.message}
+            </p>
           </div>
         )}
         {data && <Card data={data} />}
