@@ -5,7 +5,7 @@ import { TfiGithub } from "react-icons/tfi";
 const Card = ({ data }: { data: GitHubData }) => {
   return (
     <>
-      <div className="relative mb-5">
+      <div className=" mb-5 flex justify-center align-middle items-center">
         <div className="w-24 h-24 rounded-full p-1 bg-linear-to-tr from-zinc-700 to-zinc-900 shadow-xl">
           <img
             src={data.avatar_url}
@@ -18,7 +18,7 @@ const Card = ({ data }: { data: GitHubData }) => {
       <h2 className="text-2xl font-bold text-white mb-1">{data.name}</h2>
       <p className="text-zinc-500 text-sm font-medium mb-2">{data.login}</p>
       <p className="text-white text-sm font-medium mb-6">{data.bio}</p>
-      <div className="flex items-center justify-center gap-8 w-full mb-8 border-y border-zinc-800/50 py-4">
+      <div className="flex items-center justify-center gap-8 w-full mb-3 border-y border-zinc-800/50 py-4">
         <div className="flex flex-col items-center gap-1 cursor-pointer group">
           <span className="text-white font-bold text-lg group-hover:text-emerald-400 transition-colors">
             {data.followers}
@@ -37,6 +37,16 @@ const Card = ({ data }: { data: GitHubData }) => {
           </span>
         </div>
       </div>
+      <div className="flex items-center justify-center gap-8 w-full mb-8 border-y border-zinc-800/50 py-4">
+        <div className="flex flex-col items-center gap-1 cursor-pointer group">
+          <span className="text-white font-bold text-lg group-hover:text-emerald-400 transition-colors">
+            {data.public_repos}
+          </span>
+          <span className="text-zinc-500 text-xs uppercase tracking-wider font-semibold">
+            repos
+          </span>
+        </div>
+      </div>
 
       {/* Actions */}
       <div className="w-full space-y-3">
@@ -46,6 +56,7 @@ const Card = ({ data }: { data: GitHubData }) => {
 
         <a
           href={data.html_url}
+          target="_blank"
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition-all group/link"
         >
           <Globe size={16} />

@@ -6,4 +6,6 @@ export type GitHubData = {
   followers: string | number;
   following: string | number;
   html_url: string;
+  created_at: string;
+  public_repos?: string | number;
 };
