@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Suggestion from "./Suggestion";
-import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { TfiGithub } from "react-icons/tfi";
 import Card from "./Card";
 import getUser from "@/hooks/getUser";
-import type { GitHubData } from "@/types/types";
-import { Button } from "./button";
 import LoadingAnimation from "./LoadingAnimation";
 
 const Profile = () => {
@@ -29,12 +26,9 @@ const Profile = () => {
       return updated.slice(0, 4);
     });
   };
-  console.log(recentSearch);
-
   return (
     <>
-      <article className="w-full max-w-sm  rounded-3xl bg-zinc-900 border border-zinc-800 shadow-2xl shadow-black/50 overflow-hidden p-8 flex flex-col items-center text-center transition-all duration-500 hover:shadow-zinc-900/40 ">
-        {/* Profile Picture */}
+      <div className="w-full max-w-sm  rounded-3xl bg-zinc-900 border border-zinc-800 shadow-2xl shadow-black/50 overflow-hidden p-8 flex flex-col items-center text-center transition-all duration-500 hover:shadow-zinc-900/40 ">
         <div className="w-full relative group/search z-50">
           {/* Search Input Container */}
           <form
@@ -72,13 +66,13 @@ const Profile = () => {
             className="bg-red-100 text-center flex justify-center align-middle  p-3 dark:bg-red-900  gap-3 border-l-4 w-full border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 rounded-lg  items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform"
           >
             <TfiGithub />
-            <p className="text-md text-center font-semibold">
+            <p className="text-md uppercase font-extrabold text-center font-semibold">
               {error?.message}
             </p>
           </div>
         )}
         <div className="m-3">{data && <Card data={data} />}</div>
-      </article>
+      </div>
     </>
   );
 };
