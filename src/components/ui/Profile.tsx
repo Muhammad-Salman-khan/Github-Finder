@@ -3,18 +3,27 @@ import Suggestion from "./Suggestion";
 import { useQuery } from "@tanstack/react-query";
 import { TfiGithub } from "react-icons/tfi";
 import Card from "./Card";
-import getUser from "@/hooks/getUser";
+import type { GitHubData } from "../../types/types";
+import { getUser, getUserSuggestion } from "@/hooks/getUser";
 import LoadingAnimation from "./LoadingAnimation";
-
+import { Button } from "./button";
+import { useDebounce } from "use-debounce";
 const Profile = () => {
   const [username, setUsername] = useState("");
   const [submittedUser, setsubmittedUser] = useState("");
   const [ShowSuggestion, setShowSuggestion] = useState<boolean>(false);
   const [recentSearch, setRecentSearch] = useState<string[]>([]);
+  const [debounceUser] = useDebounce(username, 300);
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["users", submittedUser],
     queryFn: () => getUser(submittedUser),
     enabled: !!submittedUser,
+  });
+  const { data: Suggestions } = useQuery({
+    queryKey: ["github-user-Suggestion", debounceUser],
+    queryFn: () => getUserSuggestion(debounceUser),
+    enabled: debounceUser.length > 1,
   });
   const HandleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +32,7 @@ const Profile = () => {
     setsubmittedUser(trimmed);
     setRecentSearch((perv) => {
       const updated = [trimmed, ...perv.filter((i) => i !== trimmed)];
+      setShowSuggestion(false);
       return updated.slice(0, 4);
     });
   };
@@ -39,24 +49,30 @@ const Profile = () => {
               type="text"
               onChange={(e) => setUsername(e.target.value)}
               onFocus={() => setShowSuggestion(true)}
-              onBlur={() => setShowSuggestion(false)}
               value={username}
               placeholder="Search GitHub username..."
               className="flex-1 w-full h-full bg-transparent border-none ring-0 outline-none text-base text-white placeholder-slate-500 focus:ring-0 pl-3 pr-12"
               disabled={isLoading}
             />
-            <button
+            <Button
               type="submit"
               disabled={isLoading || !username}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 px-4 sm:px-6 rounded-lg bg-cyan-500 text-slate-900 font-semibold text-sm hover:bg-cyan-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 px-4 sm:px-6 rounded-lg bg-slate-950 text-white font-semibold text-sm hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Searching..." : "Search"}
-            </button>
+            </Button>
           </form>
         </div>
-        <div className="mt-5 w-full">
-          {recentSearch && ShowSuggestion === true && (
-            <Suggestion RecentSearch={recentSearch} />
+        <div onChange={() => setShowSuggestion(false)} className="mt-5 w-full">
+          {recentSearch && ShowSuggestion && (
+            <Suggestion
+              RecentSearch={recentSearch}
+              Suggestions={Suggestions}
+              onselect={(e: any) => {
+                setUsername(e);
+                setsubmittedUser(e);
+              }}
+            />
           )}
         </div>
         {isLoading && <LoadingAnimation />}
@@ -66,7 +82,7 @@ const Profile = () => {
             className="bg-red-100 text-center flex justify-center align-middle  p-3 dark:bg-red-900  gap-3 border-l-4 w-full border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 rounded-lg  items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform"
           >
             <TfiGithub />
-            <p className="text-md uppercase font-extrabold text-center font-semibold">
+            <p className="text-md uppercase font-extrabold text-center ">
               {error?.message}
             </p>
           </div>
