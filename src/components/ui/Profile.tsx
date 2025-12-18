@@ -8,6 +8,7 @@ import { getUser, getUserSuggestion } from "@/hooks/getUser";
 import LoadingAnimation from "./LoadingAnimation";
 import { Button } from "./button";
 import { useDebounce } from "use-debounce";
+import ErrorMessage from "./ErrorMessage";
 const Profile = () => {
   const [username, setUsername] = useState("");
   const [submittedUser, setsubmittedUser] = useState("");
@@ -30,9 +31,9 @@ const Profile = () => {
     const trimmed = username.trim();
     if (!trimmed) return;
     setsubmittedUser(trimmed);
+    setShowSuggestion(false);
     setRecentSearch((perv) => {
       const updated = [trimmed, ...perv.filter((i) => i !== trimmed)];
-      setShowSuggestion(false);
       return updated.slice(0, 4);
     });
   };
@@ -76,17 +77,7 @@ const Profile = () => {
           )}
         </div>
         {isLoading && <LoadingAnimation />}
-        {isError && (
-          <div
-            role="alert"
-            className="bg-red-100 text-center flex justify-center align-middle  p-3 dark:bg-red-900  gap-3 border-l-4 w-full border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 rounded-lg  items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform"
-          >
-            <TfiGithub />
-            <p className="text-md uppercase font-extrabold text-center ">
-              {error?.message}
-            </p>
-          </div>
-        )}
+        {isError && <ErrorMessage error={error} />}
         <div className="m-3">{data && <Card data={data} />}</div>
       </div>
     </>
