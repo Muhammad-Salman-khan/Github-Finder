@@ -25,6 +25,7 @@ const Suggestion = ({
           </div>
           {Suggestions?.slice(0, 5).map((item: GitHubData) => (
             <SuggestionList
+              key={item.id}
               preFetch={preFetch}
               item={item}
               onselect={onselect}
