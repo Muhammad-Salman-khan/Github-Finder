@@ -1,6 +1,5 @@
 import { getUser } from "@/hooks/getUser";
 import { ArrowUpLeft, Clock } from "lucide-react";
-
 const RecentList = ({ item, preFetch, onselect, setShowSuggestion }: any) => {
   return (
     <>
@@ -11,7 +10,7 @@ const RecentList = ({ item, preFetch, onselect, setShowSuggestion }: any) => {
         }}
         onMouseEnter={() => {
           preFetch.prefetchQuery({
-            queryKey: ["users", "", item],
+            queryKey: ["users", item],
             queryFn: () => getUser(item),
           });
         }}

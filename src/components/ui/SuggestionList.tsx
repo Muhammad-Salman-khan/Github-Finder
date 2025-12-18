@@ -1,13 +1,25 @@
 import { getUser } from "@/hooks/getUser";
+import type { GitHubData } from "@/types/types";
 import { ArrowUpLeft, Clock } from "lucide-react";
-
+type SuggestionType = {
+  item: GitHubData;
+  preFetch: {
+    prefetchQuery: (options: {
+      queryKey: readonly string[];
+      queryFn: () => Promise<any>;
+    }) => void;
+  };
+  onselect: (login: string) => void;
+  setShowSuggestion: React.Dispatch<React.SetStateAction<boolean>>;
+  setRecentSearch: React.Dispatch<React.SetStateAction<string[]>>;
+};
 const SuggestionList = ({
   item,
   preFetch,
   onselect,
   setShowSuggestion,
   setRecentSearch,
-}: any) => {
+}: SuggestionType) => {
   return (
     <>
       <div
@@ -15,7 +27,7 @@ const SuggestionList = ({
         onClick={() => {
           onselect(item.login);
           setShowSuggestion(false);
-          setRecentSearch((perv: []) => [item.login, ...perv]);
+          setRecentSearch((perv: string[]) => [item.login, ...perv]);
         }}
         onMouseEnter={() => {
           preFetch.prefetchQuery({
