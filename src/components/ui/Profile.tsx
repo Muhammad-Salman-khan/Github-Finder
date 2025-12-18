@@ -69,6 +69,8 @@ const Profile = () => {
             <Suggestion
               RecentSearch={recentSearch}
               Suggestions={Suggestions}
+              setShowSuggestion={setShowSuggestion}
+              setRecentSearch={setRecentSearch}
               onselect={(e: any) => {
                 setUsername(e);
                 setsubmittedUser(e);
