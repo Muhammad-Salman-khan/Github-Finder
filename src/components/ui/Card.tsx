@@ -1,8 +1,54 @@
+import {
+  checkFollowingUser,
+  FollowAndUnfollow,
+  UnFollowUser,
+} from "@/hooks/getUser";
 import type { GitHubData } from "@/types/types";
+import { toast } from "sonner";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Globe } from "lucide-react";
 import { TfiGithub } from "react-icons/tfi";
+import { Button } from "./button";
 
 const Card = ({ data }: { data: GitHubData }) => {
+  const {
+    data: isFollowing,
+    refetch,
+    isLoading,
+    error,
+    isError,
+  } = useQuery({
+    queryKey: ["follow-status", data.login],
+    queryFn: () => checkFollowingUser(data.login),
+    enabled: !!data.login,
+  });
+  const FollowMutation = useMutation({
+    mutationFn: () => FollowAndUnfollow(data.login),
+    onSuccess: () => {
+      toast.success(`you are following ${data.login}`);
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  const Unfollow = useMutation({
+    mutationFn: () => UnFollowUser(data.login),
+    onSuccess: () => {
+      toast.success(`you are no longer following ${data.login}`);
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  const handleMutate = () => {
+    if (isFollowing) {
+      Unfollow.mutate();
+    } else {
+      FollowMutation.mutate();
+    }
+  };
   return (
     <>
       <div className=" mb-5 flex justify-center align-middle items-center">
@@ -50,6 +96,16 @@ const Card = ({ data }: { data: GitHubData }) => {
 
       {/* Actions */}
       <div className="w-full space-y-3">
+        <Button
+          disabled={Unfollow.isPending || FollowMutation.isPending}
+          onClick={handleMutate}
+          className={`w-full ${
+            isFollowing ? "bg-black text-white" : "bg-white text-zinc-950"
+          } flex items-center justify-center gap-2  py-3 rounded-xl font-bold text-sm transition-all hover:bg-zinc-800 active:scale-95 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-900`}
+        >
+          {isFollowing ? "following" : "Follow"}
+        </Button>
+
         <a
           href={data.html_url}
           target="_blank"
