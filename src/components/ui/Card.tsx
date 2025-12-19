@@ -50,10 +50,6 @@ const Card = ({ data }: { data: GitHubData }) => {
 
       {/* Actions */}
       <div className="w-full space-y-3">
-        <button className="w-full flex items-center justify-center gap-2 bg-white text-zinc-950 py-3 rounded-xl font-bold text-sm transition-all hover:bg-zinc-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 focus:ring-offset-zinc-900">
-          + Follow
-        </button>
-
         <a
           href={data.html_url}
           target="_blank"
