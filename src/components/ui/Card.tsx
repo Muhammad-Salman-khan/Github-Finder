@@ -35,7 +35,7 @@ const Card = ({ data }: { data: GitHubData }) => {
   const Unfollow = useMutation({
     mutationFn: () => UnFollowUser(data.login),
     onSuccess: () => {
-      toast.success(`you are no longer following ${data.login}`);
+      toast.error(`you are no longer following ${data.login}`);
       refetch();
     },
     onError: (error) => {
